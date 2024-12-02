@@ -50,6 +50,7 @@ begin
     v[i] = o;
     leeroficina (o);
     i:= i+1;
+    dimL:= dimL +1;
   end;
 end;
 
@@ -68,6 +69,14 @@ begin
       v[j]:= aux; //pongo el mas chico en la posicion de la vuelta
 end;
 
+procedure imprimirvector (v:vector; dimL:integer);
+var
+  i:integer;
+begin
+  for i:=1 to dimL do
+    writeln ("posicion " , i, ": " , v[i]);
+end;
+
 //programa principal
 var
   v:vector;
@@ -75,4 +84,5 @@ begin
   inicializarvector(v);
   cargarvector(v);
   seleccion(v);
+  imprimirvector(v);
 end.
