@@ -1,0 +1,81 @@
+programa ejercicio1
+procesos
+  proceso depositar(E av: numero; E ca:numero; E flores:numero)
+  comenzar
+    Pos (av,ca)
+    repetir flores
+      depositarFlor
+      
+    Pos (4,1)
+  fin
+areas
+  a1: AreaPC (1,1,1,100)
+  a2: AreaPC (2,1,2,100)
+  a3: AreaPC (3,1,3,100)
+  aser: AreaPC (4,1,4,1)
+robots
+  robot servidor
+  variables
+    terminados,id,flores,av,ca:numero
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+    terminados:=0
+    EnviarMensaje (1,r1)
+    Informar (terminados)
+    mientras (terminados < 1)
+      RecibirMensaje (id,r1)
+      si (id = 1)
+        RecibirMensaje (flores,r1)
+        si (flores <> 0)
+          RecibirMensaje (av,r1)
+          RecibirMensaje (ca,r1)
+          depositar (av,ca,flores)
+          EnviarMensaje (V,r1)
+        sino
+          terminados:= terminados + 1
+  fin
+  robot cliente
+  variables
+    id,flores,av,ca:numero
+    voy,sigo:boolean
+  comenzar
+    RecibirMensaje (id,ser)
+    sigo:= V
+    mientras (PosCa<100)
+      Random (flores,1,5)
+      EnviarMensaje (id,ser)
+      EnviarMensaje (flores,ser)
+      av:= PosAv
+      ca:= PosCa+1
+      EnviarMensaje (av,ser)
+      EnviarMensaje (ca,ser)
+      RecibirMensaje (voy,ser)
+      si (PosCa < 100)
+        mover
+        repetir flores
+          tomarFlor
+        Pos (PosAv,PosCa-1)
+      mientras (PosCa<100) & (flores>0)
+        depositarFlor
+        flores:=flores - 1
+        mover
+    si (PosCa = 100)
+      Pos (PosAv,PosCa-1)
+      EnviarMensaje (id,ser)
+      EnviarMensaje (1,ser)
+      EnviarMensaje (1,ser)
+      EnviarMensaje (100,ser)
+    EnviarMensaje (id,ser)
+    EnviarMensaje (0,ser)
+  fin
+variables
+  r1: cliente
+  ser:servidor
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(ser, aser)
+  AsignarArea(ser, a1)
+  Iniciar(r1, 1,1)
+  Iniciar(ser, 4,1)
+fin
