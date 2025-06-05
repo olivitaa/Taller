@@ -1,0 +1,92 @@
+programa ejercicio1
+procesos
+  proceso depositar(E av: numero; E ca:numero; E flores:numero)
+  comenzar
+    Pos (av,ca)
+    repetir flores
+      depositarFlor
+    Pos (4,1)
+  fin
+areas
+  a1: AreaPC (1,1,1,100)
+  a2: AreaPC (2,1,2,100)
+  a3: AreaPC (3,1,3,100)
+  aser: AreaPC (4,1,4,1)
+robots
+  robot servidor
+  variables
+    terminados,id,flores,av,ca:numero
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+    terminados:=0
+    EnviarMensaje (1,r1)
+    mientras (terminados < 1)
+      RecibirMensaje (id,*)
+      si (id = 1)
+        RecibirMensaje (flores,r1)
+        si (flores <> 0)
+          RecibirMensaje (av,r1)
+          RecibirMensaje (ca,r1)
+          depositar (av,ca,flores)
+          EnviarMensaje (V,r1)
+        sino
+          terminados:= terminados + 1
+      sino
+        si (id=2)
+          RecibirMensaje (flores,r2)
+          si (flores <>0)
+            RecibirMensaje (av,r2)
+            RecibirMensaje (ca,r2)
+            depositar (av,ca,flores)
+            EnviarMensaje (V,r2)
+          sino
+            terminados:= terminados + 1
+        sino
+          RecibirMensaje (flores,r3)
+          si (flores <> 0)
+            RecibirMensaje (av,r3)
+            RecibirMensaje (ca,r3)
+            depositar(av,ca,flores)
+            EnviarMensaje (V,r3)
+          sino
+            terminados:= terminados + 1
+  fin
+  robot cliente
+  variables
+    id,flores:numero
+    voy,sigo:boolean
+  comenzar
+    RecibirMensaje (id,ser)
+    sigo:= V
+    mientras (sigo)
+      Random (flores,1,5)
+      EnviarMensaje (id,ser)
+      EnviarMensaje (flores,ser)
+      EnviarMensaje (PosAv,ser)
+      EnviarMensaje (PosCa+1,ser)
+      RecibirMensaje (voy,ser)
+      si (PosCa < 100)
+        mover
+        repetir flores
+          tomarFlor
+        Pos (PosAv,PosCa-1)
+      sino
+        sigo:=F
+      mientras (PosAv<100) & (flores>0)
+        depositarFlor
+        flores:=flores + 1
+        mover  
+    EnviarMensaje (id,ser)
+    EnviarMensaje (0,ser)
+  fin
+variables
+  r1: cliente
+  ser:servidor
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(ser, aser)
+  AsignarArea(ser, a1)
+  Iniciar(r1, 1,1)
+  Iniciar(ser, 4,1)
+fin
