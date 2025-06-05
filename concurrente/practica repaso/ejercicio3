@@ -1,0 +1,99 @@
+programa ejercicio3
+procesos
+  proceso juntarFlores(ES hay: boolean; ES flores:numero)
+  comenzar
+    BloquearEsquina (10,10)
+    Pos (10,10)
+    si (HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores + 1
+    sino
+      hay:= F
+    Pos (1,5)
+    LiberarEsquina (10,10)
+  fin
+areas
+  a1: AreaP (1,3,100,3)
+  a2: AreaP (1,4,100,4)
+  ac: AreaP (1,5,1,5)
+  esquina: AreaC(10,10,10,10)
+robots
+  robot recolector
+  variables
+    flores,esquinas,av,ca:numero
+    sigo:boolean
+  comenzar
+    derecha
+    esquinas:=0
+    flores:=0
+    sigo:=V
+    ca:=PosCa
+    mientras (PosAv < 100)
+      mientras (esquinas < 15) & (flores < 10)
+        si (HayFlorEnLaEsquina)
+          tomarFlor
+          flores:= flores + 1
+        sino
+          mover
+          esquinas:= esquinas + 1
+      av:=PosAv
+      repetir flores
+        BloquearEsquina (10,10)
+        Pos(10,10)
+        depositarFlor
+        flores:= flores - 1
+        Pos(av,ca)
+        LiberarEsquina (10,10)
+      EnviarMensaje (V,cos)
+      si (esquinas=15)
+        esquinas:=0
+      si (flores = 10)
+        flores:=0
+    mientras (sigo)
+      mientras (esquinas < 15) & (flores < 10)
+        si (HayFlorEnLaEsquina)
+          tomarFlor
+          flores:= flores + 1
+      si (flores = 10) 
+        av:=PosAv
+        repetir 10
+          BloquearEsquina (10,10)
+          Pos(10,10)
+          depositarFlor
+          Pos (av,ca)
+          LiberarEsquina (10,10)
+      sino
+        sigo:=F
+    EnviarMensaje (F,cos)
+  fin
+  robot cosechador
+  variables
+    voy,hay:boolean
+    terminaron,flores:numero
+  comenzar
+    terminaron:=0
+    flores:=0
+    mientras (terminaron < 2)
+      RecibirMensaje (voy,*)
+      si (voy)
+        hay:= V
+        mientras (hay)
+          juntarFlores (hay,flores)  
+      sino
+        terminaron:= terminaron + 1    
+    Informar (flores)
+  fin
+variables
+  r1,r2: recolector
+  cos:cosechador
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(r2, a2)
+  AsignarArea(r1, esquina)
+  AsignarArea(r2, esquina)
+  AsignarArea(cos, ac)
+  AsignarArea(cos, esquina)
+  Iniciar(r1, 1,3)
+  Iniciar (r2,1,4)
+  Iniciar (cos,1,5)
+fin
