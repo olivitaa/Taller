@@ -1,0 +1,108 @@
+programa ejercicio2
+procesos
+  proceso recorrerAvenida(E numAv: numero)
+  comenzar
+    Pos(numAv, 1)
+    repetir 99
+      mover
+  fin
+areas
+  a1: AreaP (5,1,5,100)
+  a2: AreaP (10,1,10,100)
+  esquina: AreaC (1,1,1,1)
+  a3: AreaP (11,1,11,1)
+  a4: AreaP (12,1,12,1)
+robots
+  robot productor
+  variables
+    papeles,av,ca:numero
+    hay:boolean
+  comenzar
+    av:= PosAv
+    mientras (PosCa < 100)
+      mientras (papeles < 5) & (PosCa < 100)
+        si (HayPapelEnLaEsquina)
+          tomarPapel
+          papeles:= papeles + 1
+        sino
+          mover
+      si (papeles = 5)
+        ca:= PosCa
+        repetir papeles
+          BloquearEsquina (1,1)
+          Pos (1,1)
+          depositarPapel
+          Pos (av,ca)
+          LiberarEsquina (1,1)
+        papeles:=0
+    hay:=V
+    mientras (hay)
+      mientras (papeles < 5)
+        si (HayPapelEnLaEsquina)
+          tomarPapel
+          papeles:=papeles+ 1
+        sino
+          hay:= F
+      si (papeles = 5)
+        repetir papeles
+          BloquearEsquina (1,1)
+          Pos (1,1)
+          depositarPapel
+          Pos (av,1)
+          LiberarEsquina (1,1)
+        papeles:=0     
+  fin
+  robot consumidor
+  variables
+    papeles,aux,intentos,av:numero
+    hay:boolean
+  comenzar
+    av:= PosAv
+    intentos:=0
+    aux:=0
+    mientras (intentos < 8)
+      Random (papeles,2,5)
+      hay:=V
+      mientras (hay)
+        si (aux < papeles)
+          BloquearEsquina (1,1)
+          Pos (1,1)
+          si (HayPapelEnLaEsquina)
+            tomarPapel
+            aux:= aux + 1
+          sino   
+            hay:= F
+          Pos (av,1)
+          LiberarEsquina (1,1)
+        sino
+          hay:=F
+      si (aux < papeles)
+        repetir aux
+          BloquearEsquina (1,1)
+          Pos (1,1)
+          depositarPapel
+          Pos (av,1)
+          LiberarEsquina (1,1)
+      sino
+        repetir aux
+          depositarPapel
+      aux:=0
+      intentos:= intentos + 1
+  fin
+variables
+  p1,p2: productor
+  c1,c2:consumidor
+comenzar
+  AsignarArea (p1,a1)
+  AsignarArea (p2,a2)
+  AsignarArea (c1,a3)
+  AsignarArea (c2,a4)
+  AsignarArea (p1,esquina)
+  AsignarArea (p2,esquina)
+  AsignarArea (c1,esquina)
+  AsignarArea (c2,esquina)
+  Iniciar(p1, 5,1)
+  Iniciar(p2,10,1)
+  Iniciar(c1,11,1)
+  Iniciar(c2,12,1)
+fin
