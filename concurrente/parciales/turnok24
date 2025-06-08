@@ -1,0 +1,90 @@
+programa parcialk
+procesos
+  proceso juntarFlores(ES flores: numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      flores:= flores + 1
+  fin
+  proceso cuadrado (E lado:numero; ES flores:numero)
+  comenzar
+    repetir 2
+      repetir 2
+        repetir lado
+          juntarFlores (flores)
+          mover
+        derecha
+  fin
+areas
+  a1: AreaP (1,1,7,18)
+  a2: AreaP (8,1,14,18)
+  a3: AreaP (15,1,21,18)
+  aser: AreaP (22,1,22,1)
+  esquina: AreaC (50,50,50,50)
+robots
+  robot cliente
+  variables
+    lado,flores,id:numero
+    av,ca:numero
+  comenzar
+    av:= PosAv
+    RecibirMensaje(id,ser)
+    flores:=0
+    repetir 3
+      EnviarMensaje (id,ser)
+      RecibirMensaje (lado,ser)
+      cuadrado (lado,flores)
+      ca:= PosCa
+      repetir flores
+        BloquearEsquina (50,50)
+        Pos (50,50)
+        depositarFlor
+        Pos (av,ca)
+        LiberarEsquina (50,50)
+      flores:=0
+      ca:= PosCa+lado+1
+      Pos (PosAv, ca)
+    EnviarMensaje (0,ser)
+  fin
+  robot servidor
+  variables
+    terminados,lado,id,flores:numero
+  comenzar
+    EnviarMensaje (1,r1)
+    EnviarMensaje (2,r2)
+    EnviarMensaje (3,r3)
+    terminados:=0
+    mientras (terminados < 3)
+      RecibirMensaje (id,*)
+      Random(lado,1,5)
+      si (id=0)
+        terminados:= terminados + 1
+      sino
+        si (id=1)
+          EnviarMensaje (lado,r1)
+        sino
+          si (id=2)
+            EnviarMensaje (lado,r2)
+          sino
+            EnviarMensaje (lado,r3)
+    Pos (50,50)
+    juntarFlores(flores)  
+    Informar (flores)
+  fin
+variables
+  r1,r2,r3: cliente
+  ser:servidor
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(r2, a2)
+  AsignarArea(r3, a3)
+  AsignarArea(r1, esquina)
+  AsignarArea(r2, esquina)
+  AsignarArea(r3, esquina)
+  AsignarArea(ser, esquina) 
+  AsignarArea(ser, aser)  
+  Iniciar(r1,1,1)
+  Iniciar(r2,8,1)
+  Iniciar(r3,15,1)
+  Iniciar(ser,22,1)
+fin
